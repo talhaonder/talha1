@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "45abc2c3-d350-44ce-b53a-bf9ce9a6718b"
+      }
+    },
+    "owner": "talhaonder"
   }
 }
