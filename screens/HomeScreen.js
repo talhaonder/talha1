@@ -289,6 +289,7 @@ export default function HomeScreen() {
                                         </TouchableOpacity>
                                         {/* Liste içeriği */}
                                         <ScrollView
+                                            keyboardShouldPersistTaps="always"
                                             horizontal
                                             showsHorizontalScrollIndicator={false}>
                                             {searchHistory.map((historyItem, index) => (
@@ -327,6 +328,7 @@ export default function HomeScreen() {
                                 }}>
                                     {/* Liste içeriği */}
                                     <ScrollView
+                                    keyboardShouldPersistTaps="always"
                                     style={{ marginTop: 50 }}
                                     >
                                         {locations.map((loc, index) => (
@@ -366,6 +368,7 @@ export default function HomeScreen() {
                                 }}>
                                     {/* Liste içeriği */}
                                     <ScrollView
+                                    keyboardShouldPersistTaps="always"
                                         horizontal
                                         showsHorizontalScrollIndicator={false}
                                         >
@@ -486,6 +489,7 @@ export default function HomeScreen() {
 
                         <View>
                             <ScrollView
+                            keyboardShouldPersistTaps="always"
                                 horizontal
                                 contentContainerStyle={{ paddingHorizontal: 15 }}
                                 showsHorizontalScrollIndicator={false}>
