@@ -16,11 +16,33 @@ import { useNavigation } from "@react-navigation/native";
 export default function HomeScreen() {
     const navigation = useNavigation();
 
+    const formatSunriseTime = (rawTime) => {
+        // API'den gelen rawTime değerini kontrol et
+        console.log('rawTime from API:', rawTime);
+
+        // Saat bilgisini alınan sayıya göre oluştur
+        const date = new Date(`2000-01-01T${rawTime}:00:00`);
+
+        // Oluşturulan tarihi kontrol et
+        console.log('Formatted Date:', date);
+
+        // Tarihi istediğiniz formatta yazdır
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+
+
+
+
     // Seçilen bölge bilgisini tutan state
     const [selectedRegion, setSelectedRegion] = useState({
         lat: 0,
         long: 0,
     });
+    const [selectedDay, setSelectedDay] = useState(null);
+    const [sunrise, setSunrise] = useState(null);
+
+    const selectedDatAstroSunrise = selectedDay?.day?.astro?.sunrise || 0;
 
     // Arama çubuğunu gösterip/gizlemeye yarayan state
     const [showSearch, toggleSearch] = useState(false);
@@ -33,18 +55,6 @@ export default function HomeScreen() {
 
     // Hava durumu bilgilerini tutan state
     const [weather, setWeather] = useState({});
-
-    // Seçilen gün bilgisini tutan state
-    const [selectedDay, setSelectedDay] = useState(null);
-
-    // Seçilen günün hava durumu ikonunu tutan state
-    const [selectedDayWeatherImage, setSelectedDayWeatherImage] = useState(weatherImages[current?.condition.text] || require('../assets/image/sun.png'));
-
-    // Mevcut sıcaklık bilgisini tutan state
-    const [currentTemp, setCurrentTemp] = useState(current?.temp_c || 0);
-
-    // Seçilen günün hava durumu şartını tutan state
-    const [selectedCurrentCondition, setSelectedCurrentCondition] = useState(current?.condition?.text || 0);
 
     // Arama geçmişi bilgisini tutan state
     const [searchHistory, setSearchHistory] = useState([]);
@@ -59,6 +69,11 @@ export default function HomeScreen() {
     const toggleHistory = () => {
         setShowHistory(!showHistory);
     };
+    const [currentTemp, setCurrentTemp] = useState((current && current.temp_c) || 0);
+    const [selectedCurrentCondition, setSelectedCurrentCondition] = useState((current && current.condition && current.condition.text) || '');
+    const [selectedDayWind, setWind] = useState((current && current.wind_kph) || 0);
+    const [selectedDayHumidity, setHumidity] = useState((current && current.humidity) || 0);
+    const [selectedDayWeatherImage, setSelectedDayWeatherImage] = useState(weatherImages[(current && current.condition && current.condition.text)] || require('../assets/image/sun.png'));
 
     /**
      * Arama işlemi başlatan fonksiyon.
@@ -89,23 +104,19 @@ export default function HomeScreen() {
     );
 
     const { location, current } = weather || {};
+    // Add this function
+
 
     // TextInput referansı
     const searchInputRef = useRef(null);
 
     /**
-     * Sıcaklık değerini bir artıran fonksiyon.
-     */
-    const handleIncrementTemp = () => {
-        setCurrentTemp((prevTemp) => (prevTemp || 0) + 1);
-    };
-
-    /**
      * Günlerden birine basıldığında çağrılan fonksiyon.
      * @param {object} item - Seçilen gün objesi
      */
+
     const handleDayPress = (item) => {
-        setSelectedDay(item);
+        setSelectedDay({ ...item, dayName });
         setCurrentTemp(item?.day?.avgtemp_c || 0);
         setSelectedDayWeatherImage(weatherImages[item?.day?.condition?.text] || require('../assets/image/sun.png'));
 
@@ -113,9 +124,14 @@ export default function HomeScreen() {
         const options = { weekday: 'long' };
         const dayName = date.toLocaleDateString('en-US', options).split(',')[0];
 
-        setSelectedDay({ ...item, dayName });
-        setCurrentTemp(item?.day?.avgtemp_c || 0);
+        // Fix sunrise extraction from astro data    
         setSelectedCurrentCondition(item?.day?.condition?.text || '');
+        setWind(item?.day?.maxwind_kph || 0);
+        setHumidity(item?.day?.avghumidity || 0);
+
+        // Set the sunrise time in the state
+        const selectedDatAstroSunrise = item?.day?.astro?.sunrise || 0;
+        setSunrise(selectedDatAstroSunrise ? formatSunriseTime(selectedDatAstroSunrise) : '');
     };
 
     /**
@@ -129,9 +145,11 @@ export default function HomeScreen() {
         });
         navigation.navigate('Map', {
             long: lon,
-            lat: lat
+            lat: lat,
+            sunrise: selectedDay?.astro?.sunrise || '', // Use selectedDay for sunrise
         });
     };
+
 
     /**
      * Günlerden birine basıldığında çağrılan fonksiyon.
@@ -328,8 +346,8 @@ export default function HomeScreen() {
                                 }}>
                                     {/* Liste içeriği */}
                                     <ScrollView
-                                    keyboardShouldPersistTaps="always"
-                                    style={{ marginTop: 50 }}
+                                        keyboardShouldPersistTaps="always"
+                                        style={{ marginTop: 50 }}
                                     >
                                         {locations.map((loc, index) => (
                                             <TouchableOpacity
@@ -368,10 +386,10 @@ export default function HomeScreen() {
                                 }}>
                                     {/* Liste içeriği */}
                                     <ScrollView
-                                    keyboardShouldPersistTaps="always"
+                                        keyboardShouldPersistTaps="always"
                                         horizontal
                                         showsHorizontalScrollIndicator={false}
-                                        >
+                                    >
                                         {searchHistory.map((historyItem, index) => (
                                             <TouchableOpacity
                                                 key={index}
@@ -468,62 +486,66 @@ export default function HomeScreen() {
                                         height: 18, width
                                             : 18
                                     }} />
-                                    <Text style={{ fontWeight: "500", color: "white" }}>{current?.wind_kph}</Text>
+                                    <Text style={{ fontWeight: "500", color: "white" }}>{selectedDayWind}</Text>
                                 </View>
                                 <View style={{ display: "flex", justifyContent: "space-between", marginHorizontal: 4, flexDirection: "row", alignItems: "center", marginHorizontal: 2 }}>
                                     <Image source={require('../assets/icons/drop.png')} style={{
                                         height: 18, width
                                             : 18
                                     }} />
-                                    <Text style={{ fontWeight: "500", color: "white" }}> {current?.humidity}</Text>
+                                    <Text style={{ fontWeight: "500", color: "white" }}> {selectedDayHumidity}</Text>
                                 </View>
                                 <View style={{ display: "flex", alignItems: "center", marginHorizontal: 2, flexDirection: "row" }}>
                                     <Image source={require('../assets/image/sun.png')} style={{
                                         height: 18, width
                                             : 18
                                     }} />
-                                    <Text style={{ fontWeight: "500", color: "white" }}> {weather?.forecast?.forecastday[0]?.astro?.sunrise}</Text>
+                                    <Text style={{ fontWeight: "500", color: "white" }}>{formatSunriseTime(selectedDatAstroSunrise)}</Text>
                                 </View>
                             </View>
                         </View>
 
-                        <View>
-                            <ScrollView
-                            keyboardShouldPersistTaps="always"
-                                horizontal
-                                contentContainerStyle={{ paddingHorizontal: 15 }}
-                                showsHorizontalScrollIndicator={false}>
-                                {weather?.forecast?.forecastday?.map((item, index) => {
-                                    let date = new Date(item.date);
-                                    let options = { weekday: 'long' };
-                                    let dayName = date.toLocaleDateString('en-US', options);
-                                    dayName = dayName.split(',')[0];
+             {/* forecast for next day's */}
+             <View style={{ marginBottom: 20, marginVertical: 20, }}>
+                <ScrollView
+                    keyboardShouldPersistTaps="always"
+                    horizontal
+                    contentContainerStyle={{ paddingHorizontal: 15 }}
+                    showsHorizontalScrollIndicator={false}
+                >
+                    {weather?.forecast?.forecastday?.map((item, index) => {
+                        let date = new Date(item.date);
+                        let options = { weekday: 'long' };
+                        let dayName = date.toLocaleDateString('en-US', options);
+                        dayName = dayName.split(',')[0];
 
-                                    return (
-                                        <TouchableOpacity
-                                            onPress={() => handleDayPress(item)}
-                                            key={index}
-                                            style={{
-                                                flex: 1,
-                                                margin: 5,
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                width: 100,
-                                                marginTop: 15,
-                                                height: 100,
-                                                borderRadius: 25,
-                                                paddingVertical: 3,
-                                                marginBottom: 1,
-                                                backgroundColor: theme.bgWhite(0.15)
-                                            }}>
-                                            <Image source={weatherImages[item?.day?.condition?.text] || require('../assets/image/sun.png')} style={{ height: 44, width: 44 }} />
-                                            <Text style={{ color: "white", fontSize: 12, fontWeight: '300' }}>{dayName}</Text>
-                                            <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{item?.day?.avgtemp_c}&#176;</Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            </ScrollView>
-                        </View>
+                        return (
+                            <TouchableOpacity
+                                onPress={() => handleDayPress(item)}
+                                key={index}
+                                style={{
+                                    flex: 1,
+                                    margin: 5,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: 100,
+                                    height: 150,  // İlgili kısım: Elemanların yüksekliğini artırabilirsiniz.
+                                    borderRadius: 25,
+                                    paddingVertical: 3,
+                                    marginBottom: 1,
+                                    backgroundColor: theme.bgWhite(0.15),
+                                }}
+                            >
+                                <Image source={weatherImages[item?.day?.condition?.text] || require('../assets/image/sun.png')} style={{ height: 44, width: 44 }} />
+                                <Text style={{ color: 'white', fontSize: 12, fontWeight: '300' }}>{dayName}</Text>
+                                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{item?.day?.avgtemp_c}&#176;</Text>
+                                <Text style={{ color: 'white', fontSize: 12 }}>{item?.astro?.sunrise}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </ScrollView>
+            </View>
+
                     </SafeAreaView>
                 )
             }
