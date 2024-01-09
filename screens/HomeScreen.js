@@ -29,11 +29,6 @@ export default function HomeScreen() {
         // Tarihi istediğiniz formatta yazdır
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
-
-
-
-
-
     // Seçilen bölge bilgisini tutan state
     const [selectedRegion, setSelectedRegion] = useState({
         lat: 0,
@@ -505,46 +500,46 @@ export default function HomeScreen() {
                             </View>
                         </View>
 
-             {/* forecast for next day's */}
-             <View style={{ marginBottom: 20, marginVertical: 20, }}>
-                <ScrollView
-                    keyboardShouldPersistTaps="always"
-                    horizontal
-                    contentContainerStyle={{ paddingHorizontal: 15 }}
-                    showsHorizontalScrollIndicator={false}
-                >
-                    {weather?.forecast?.forecastday?.map((item, index) => {
-                        let date = new Date(item.date);
-                        let options = { weekday: 'long' };
-                        let dayName = date.toLocaleDateString('en-US', options);
-                        dayName = dayName.split(',')[0];
+                        {/* forecast for next day's */}
+                        <View style={{ marginBottom: 20, marginVertical: 20, }}>
+                                <ScrollView
+                                    keyboardShouldPersistTaps="always"
+                                    horizontal
+                                    contentContainerStyle={{ paddingHorizontal: 15 }}
+                                    showsHorizontalScrollIndicator={false}
+                                >
+                                    {weather?.forecast?.forecastday?.map((item, index) => {
+                                        let date = new Date(item.date);
+                                        let options = { weekday: 'long' };
+                                        let dayName = date.toLocaleDateString('en-US', options);
+                                        dayName = dayName.split(',')[0];
 
-                        return (
-                            <TouchableOpacity
-                                onPress={() => handleDayPress(item)}
-                                key={index}
-                                style={{
-                                    flex: 1,
-                                    margin: 5,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: 100,
-                                    height: 150,  // İlgili kısım: Elemanların yüksekliğini artırabilirsiniz.
-                                    borderRadius: 25,
-                                    paddingVertical: 3,
-                                    marginBottom: 1,
-                                    backgroundColor: theme.bgWhite(0.15),
-                                }}
-                            >
-                                <Image source={weatherImages[item?.day?.condition?.text] || require('../assets/image/sun.png')} style={{ height: 44, width: 44 }} />
-                                <Text style={{ color: 'white', fontSize: 12, fontWeight: '300' }}>{dayName}</Text>
-                                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{item?.day?.avgtemp_c}&#176;</Text>
-                                <Text style={{ color: 'white', fontSize: 12 }}>{item?.astro?.sunrise}</Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </ScrollView>
-            </View>
+                                        return (
+                                            <TouchableOpacity
+                                                onPress={() => handleDayPress(item)}
+                                                key={index}
+                                                style={{
+                                                    flex: 1,
+                                                    margin: 5,
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    width: 100,
+                                                    height: 150,  // İlgili kısım: Elemanların yüksekliğini artırabilirsiniz.
+                                                    borderRadius: 25,
+                                                    paddingVertical: 3,
+                                                    marginBottom: 1,
+                                                    backgroundColor: theme.bgWhite(0.15),
+                                                }}
+                                            >
+                                                <Image source={weatherImages[item?.day?.condition?.text] || require('../assets/image/sun.png')} style={{ height: 44, width: 44 }} />
+                                                <Text style={{ color: 'white', fontSize: 12, fontWeight: '300' }}>{dayName}</Text>
+                                                <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>{item?.day?.avgtemp_c}&#176;</Text>
+                                                <Text style={{ color: 'white', fontSize: 12 }}>{item?.astro?.sunrise}</Text>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </ScrollView>
+                        </View>
 
                     </SafeAreaView>
                 )

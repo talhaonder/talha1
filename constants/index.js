@@ -20,4 +20,4 @@ export const weatherImages = {
     'other': require('../assets/image/moderaterain.png'),
     'Light snow': require('../assets/image/moderaterain.png'),
     'null': require('../assets/image/moderaterain.png'),
-}
+}   
