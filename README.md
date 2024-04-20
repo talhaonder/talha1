@@ -1,13 +1,13 @@
-tWeather
-tWeather, kullanıcı dostu arayüzüyle karmaşıklıkları engelleyen bir hava durumu uygulamasıdır.
+# tWeather
+# tWeather, kullanıcı dostu arayüzüyle karmaşıklıkları engelleyen bir hava durumu uygulamasıdır.
 
 
-Özet
+# Özet
 tWeather, hava durumunu görmek isteyen kullanıcılar için kolay ve hızlı bir çözüm sunar. Kullanıcılar, aramak istedikleri lokasyonu girdikten sonra öncelikle günlük hava tahminini görebilirler. Daha sonra, aşağıda bulunan gelecek gün tahminlerine tıklayarak detaylı bilgi alabilirler. Ayrıca, arama butonuna tıkladıktan sonra geçmiş verilere kolaylıkla erişebilirler.
 
 Uygulama, asyncStorage kullanarak en son aranan konumu her zaman hatırlar ve kullanıcının ilk yükleyişinde otomatik olarak bulunduğu konumu gösterir. Böylece, kullanıcılar her zaman istedikleri lokasyonun hava durumunu kolayca görebilirler.
 
-Kullanım
+# Kullanım
 Uygulamayı yükleyin.
 Aramak istediğiniz lokasyonu girin.
 Arama butonuna tıklayarak günlük hava tahminini görün.
@@ -21,14 +21,15 @@ npm install
 
 # Uygulamayı başlatın
 npm start
-Ekran Görüntüleri
+
+# Ekran Görüntüleri
 
 ![HomeScreen](https://github.com/talhaonder/talha1/assets/96828116/e486c6ae-c193-405e-ad0e-aebb59db1674)
 ![MapView](https://github.com/talhaonder/talha1/assets/96828116/9db67fb3-3c40-4ff8-ad63-1787cf71c8cb)
 ![history](https://github.com/talhaonder/talha1/assets/96828116/42df0e99-46b7-4d4a-a35c-3c1673fe1c48)
 
 
-Bağımlılıklar
+# Bağımlılıklar
 @react-native-async-storage/async-storage: ^1.23.1
 @react-native-community/voice: ^1.1.9
 @react-navigation/native: ^6.1.17
@@ -50,7 +51,7 @@ react-native-screens: ^3.30.1
 react-native-screens-swiper: ^1.2.6
 react-native-tts: ^4.1.0
 
-İşbirliği ve Destek
+# İşbirliği ve Destek
 
 Aklınıza takılan bir sorun veya işbirlikleriniz için;
 mail : ltalhaonderl@gmail.com
